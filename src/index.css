@@ -13,18 +13,27 @@ body {
 	align-items: center;
 }
 
-#surface {
+#root > div {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
+}
+
+#surface {
 	border: 2px solid #CCC;
+}
+
+.score {
+	line-height: 1;
+	font-size: 20px;
+	font-family: monospace;
 }
 
 .tile {
 	display: inline-block;
-	border: 5px double #CCC;
-	width: 10px;
-	height: 10px;
+	border: 10px double #CCC;
+	width: 20px;
+	height: 20px;
 }
 
 .filled {
