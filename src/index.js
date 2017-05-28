@@ -23,9 +23,14 @@ class Surface extends React.Component {
 		this.state = {
 			grid: grid,
 			block: [
-				[0, [1,2,3,4,5,6,7,8,9,10]]
+				[0, [6,7]],
+				[-1, [6]],
+				[-2, [6]],
+				[-2, [6]],
 			],
 			blockOld: null,
+			keyEvent: false,
+			speed: 500,
 		}
 	}
 	genBlock() {
@@ -40,13 +45,13 @@ class Surface extends React.Component {
 			[
 				[0, [6,7]],
 				[-1,[6,7]]
-			], // L shape
+			], // square
 			[
 				[0, [6,7]],
 				[-1, [6]],
 				[-2, [6]],
 				[-2, [6]],
-			] // square
+			] // L shape
 		]
 		let index = Math.floor(blockShapes.length * Math.random());
 		return blockShapes[index];
@@ -65,6 +70,9 @@ class Surface extends React.Component {
 			}
 			block = this.genBlock();
 			blockOld = null;
+			this.setState({
+				speed: 500,
+			})
 		} else {
 			if(blockOld) {
 				if(blockOld.length > 1) {
@@ -92,13 +100,14 @@ class Surface extends React.Component {
 			grid: grid,
 			block: block,
 			blockOld: blockOld,
+			keyEvent: false,
 		});
 		if(!this.props.over)
-			setTimeout(() => this.moveBlock(), 100);
+			setTimeout(() => this.moveBlock(), this.state.speed);
 	}
 	componentDidMount() {
-	    document.addEventListener('keypress', (e) => this.handleKeyPress(e));
-		setTimeout(() => this.moveBlock(), 100);
+	    document.addEventListener('keydown', (e) => this.handleKeyPress(e));
+		setTimeout(() => this.moveBlock(), this.state.speed);
 	}
 	genRow(blocks) {
 		let tiles = Array(10);
@@ -143,18 +152,62 @@ class Surface extends React.Component {
 	}
     handleKeyPress(e) {
 	    let keycode = e.keyCode;
+	    let block = this.state.block;
+	    let blockOld = JSON.parse(JSON.stringify(block));
+	    let change = false;
+	    if(this.state.keyEvent)
+	    	return;
 	    switch(keycode) {
 	    	case 38: //up
 	    		//rotate block
 	    		break;
 	    	case 40: //down
 	    		//increase speed
+	    		this.setState({
+	    			speed: 100,
+	    		})
 	    		break;
 	    	case 37: //left
 	    		//move left
+	    		for(let i = 0; i<block.length; i++) {
+	    			if(block[i][1][0] > 1) {
+	    				for(let j = 0; j < block[i][1].length; j++)
+		    				block[i][1][j] -= 1;
+	    				change = true;
+	    			} else {
+	    				change = false;
+	    				break;
+	    			}
+	    		}
+	    		if(change) {
+	    			console.log(block, blockOld);
+	    			this.setState({
+	    				block: block,
+	    				blockOld: blockOld,
+	    				keyEvent: true,
+	    			})
+    			}
 	    		break;
 	    	case 39: //right
 	    		//move right
+	    		for(let i = 0; i<block.length; i++) {
+	    			if(block[i][1][block[i][1].length - 1] < 10) {
+	    				for(let j = 0; j < block[i][1].length; j++)
+		    				block[i][1][j] += 1;
+	    				change = true;
+	    			} else {
+	    				change = false;
+	    				break;
+	    			}
+	    		}
+	    		if(change) {
+	    			console.log(block, blockOld);
+	    			this.setState({
+	    				block: block,
+	    				blockOld: blockOld,
+	    				keyEvent: true,
+	    			})
+    			}
 	    		break;
 	    	default:
 	    		//nothing

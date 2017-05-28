@@ -6,7 +6,7 @@ This is my second game with React, again, the goal is to learn to use React. I h
 ### TODO List
 
 - Complete the game
-	- Move block
+	- ~Move block~
 	- Rotate block
 	- Fix block collision
 	- ~Generate random blocks~
